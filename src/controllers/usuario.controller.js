@@ -159,7 +159,12 @@ exports.login = async (request, response, next) => {
     if (usuario) {
       response.send({
         status: 1,
-        dados: usuario,
+        dados: {
+          nome: usuario.nome,
+          email: usuario.email,
+          perfil: usuario.perfis,
+          token: md5(new Date().toISOString())
+        },
         mensagem: 'OK'
       });
 
