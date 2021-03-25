@@ -27,6 +27,7 @@ exports.buscarUm = async (request, response, next) => {
 exports.buscarTodos = async (request, response, next) => {
   let limite = parseInt(request.query.limite) || 20;
   let pagina = parseInt(request.query.pagina) || 0;
+  let totalItens = 0;
 
   if (!Number.isInteger(limite) || !Number.isInteger(pagina)) {
     response.status(200).send({
@@ -41,15 +42,21 @@ exports.buscarTodos = async (request, response, next) => {
   limite = limite > ITENS_POR_PAGINA || limite <= 0 ? ITENS_POR_PAGINA : limite;
   pagina = pagina <= 0 ? 0 : pagina * limite;
 
-  await Cliente.findAll({
-    limit: limite,
-    offset: pagina
-  }).then(clientes => {
-    response.send({
-      status: 1,
-      dados: clientes,
-      mensagem: 'OK'
-    });
+  await Cliente.findAll({}).then(clientes => {
+    totalItens = clientes.length;
+
+    Cliente.findAll({
+      limit: limite,
+      offset: pagina
+    }).then(clientes => {
+      response.send({
+        status: 1,
+        dados: clientes,
+        mensagem: 'OK',
+        totalItens: totalItens
+      });
+
+    }).catch(error => next(error));
 
   }).catch(error => next(error));
 };
