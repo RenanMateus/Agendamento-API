@@ -17,7 +17,7 @@ exports.buscarUm = async (request, response, next) => {
       response.status(200).send({
         status: 2,
         dados: {},
-        mensagem: 'Cliente não encontrado'
+        mensagem: 'Pendencia não encontrada'
       });
     }
 
